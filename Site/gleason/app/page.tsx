@@ -22,7 +22,7 @@ export default function Home() {
         };
 
         // Load model using absolute path
-        const model = await ort.InferenceSession.create('/models/model_example.onnx', {
+        const model = await ort.InferenceSession.create('/models/resnet.onnx', {
           executionProviders: ['wasm'],
           graphOptimizationLevel: 'all'
         });
@@ -49,6 +49,7 @@ export default function Home() {
       Browser tries to open files in a new tab/window
       Browser might try to navigate away from the page
       Browser might try to display the image directly 
+      so we do the line above
     */
     const files = Array.from(e.dataTransfer.files);
     setImages(prev => [...prev, ...files]);
@@ -69,45 +70,53 @@ export default function Home() {
     });
   
     const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
+    canvas.width = 224;
+    canvas.height = 224;
     const ctx = canvas.getContext('2d');
-    ctx?.drawImage(img, 0, 0, 128, 128);
-  
-    const imageData = ctx?.getImageData(0, 0, 128, 128);
-    const pixels = imageData?.data;
-  
-    // Reshape to [1, 128, 128, 3]
-    const float32Data = new Float32Array(128 * 128 * 3);
-    for (let y = 0; y < 128; y++) {
-      for (let x = 0; x < 128; x++) {
-        const pixelIndex = (y * 128 + x) * 4;
-        const tensorIndex = (y * 128 + x) * 3;
-        float32Data[tensorIndex] = pixels![pixelIndex] / 255.0;     // R
-        float32Data[tensorIndex + 1] = pixels![pixelIndex + 1] / 255.0; // G
-        float32Data[tensorIndex + 2] = pixels![pixelIndex + 2] / 255.0; // B
-      }
+    if (!ctx) {
+      throw new Error('Could not get 2D context from canvas');
+    }
+    ctx.drawImage(img, 0, 0, 224, 224);
+    const imageData = ctx.getImageData(0, 0, 224, 224).data;
+
+    const tensor = new Float32Array(1 * 3 * 224 * 224);
+    // Mannually normalizyng for transforms_3 (the one that transformed for the training of resnet)
+    //transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    const mean = [0.485, 0.456, 0.406];
+    const std = [0.229, 0.224, 0.225];
+
+    for (let y = 0; y < 224; y++) {
+        for (let x = 0; x < 224; x++) {
+            const idx = (y * 224 + x) * 4;
+            const r = imageData[idx] / 255.0;
+            const g = imageData[idx + 1] / 255.0;
+            const b = imageData[idx + 2] / 255.0;
+            tensor[0 * 224 * 224 + y * 224 + x] = (r - mean[0]) / std[0];
+            tensor[1 * 224 * 224 + y * 224 + x] = (g - mean[1]) / std[1];
+            tensor[2 * 224 * 224 + y * 224 + x] = (b - mean[2]) / std[2];
+        }
     }
   
     URL.revokeObjectURL(imageUrl);
-    return float32Data;
+    return tensor;
   }
-  
+  function softmax(arr: number[]): number[] {
+      const max = Math.max(...arr);
+      const exps = arr.map(x => Math.exp(x - max));
+      const sum = exps.reduce((a, b) => a + b, 0);
+      return exps.map(x => x / sum);
+  }
   async function predict(image: File): Promise<number[]> {
     if (!model) return [0,0,0,0,0];
     
     try {
       const float32Data = await fileToFloat32Array(image);
-      // Create tensor with correct shape [1, 128, 128, 3]
-      const tensor = new ort.Tensor('float32', float32Data, [1, 128, 128, 3]);
-      const feeds = { 'conv2d_input': tensor };
-      const outputMap = await model.run(feeds);
-      const outputTensor = outputMap[Object.keys(outputMap)[0]];
-
-      const data = outputTensor.data as Float32Array;
-      const array = Array.from(data);
-      const arredondado = array.map(value => Number((value*100).toFixed(3)));
-      return arredondado;
+      const tensor = new ort.Tensor('float32', float32Data, [1, 3, 224, 224]);
+      const output = (await model.run({ 'input': tensor }))['output'].data as Float32Array;
+      let chances_array = softmax(Array.from(output));
+      chances_array = chances_array.map(x => Math.round(x * 100))
+      console.log(chances_array)
+      return chances_array;
     } catch(error) {
       console.error('Prediction error: ', error);
       return [0,0,0,0,0];
@@ -118,8 +127,8 @@ export default function Home() {
     var newResults = []
     for(var image of images){
       console.log('Scanning image:', image);
-      var prediction = await predict(image)
-      newResults.push({imageName: image.name, g_1:prediction[0].toString(), g_2:prediction[1].toString(), g_3:prediction[2].toString(), g_4:prediction[3].toString(), g_5:prediction[4].toString()})
+      var prediction = await predict(image);
+      newResults.push({imageName: image.name, g_3:prediction[0].toString(), g_4:prediction[1].toString(), g_5:prediction[2].toString(), nc:prediction[3].toString()})
 
     }
     setResults(newResults)
