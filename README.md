@@ -1,4 +1,4 @@
-# Neural_Gleason_Site
+# Neural Gleason Site
 This project is still in progress, but its purpose its to be a tool for helping pathologist understand how the ai images classification models classify microscopic prostatic images.
 # Features
 - Submitting and unsubmitting images
