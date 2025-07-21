@@ -5,7 +5,6 @@ This project is still in progress, but its purpose its to be a tool for helping 
 - Previewing the images
 - Seeing the models result for the images 
 # Pending features
-- Modularyzing the css
 - Selecting multiple ai models
 - Explainable ai techniques
 # How to run
