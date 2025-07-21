@@ -10,10 +10,11 @@ This project is still in progress, but its purpose its to be a tool for helping 
 # How to run
 ## Dependencies
     next.js >= 15.4.2
+    
 ## Running
 ```bash
-    git clone https://github.com/newtonepv/Neural_Gleason_Site.git
-    cd Neural_Gleason_Site/Site/gleason
-    npm install #installing dependencies
-    npm run dev
-´´´
+git clone https://github.com/newtonepv/Neural_Gleason_Site.git
+cd Neural_Gleason_Site/Site/gleason
+npm install #installing dependencies
+npm run dev
+```
