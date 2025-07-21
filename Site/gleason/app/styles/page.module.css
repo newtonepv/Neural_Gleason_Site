@@ -1,0 +1,293 @@
+
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+  --button-primary-hover: #383838;
+  --xButton_width: 40px;
+  --xButton_height: 40px;
+
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  /*min-height: 8svh;*/
+  gap: 0px;
+  font-family: var(--font-geist-sans);
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+    --button-primary-hover: #ccc;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  grid-row-start: 2;
+  overflow: hidden; 
+}
+
+.titleContainer {
+  margin-bottom: 0vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 4vh;
+}
+.descriptionContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 80vw;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--foreground);
+  margin-bottom: 3.5vh;
+}
+.descriptionText {
+  margin-top: 0vh;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 400;
+  max-width: 40vw;
+  color: #2c3e50;
+}
+.descriptionList {
+  text-align: left;
+  width: 100%; 
+  margin-top: 3.5vh;
+}
+.dropZone {
+  position: relative;
+  min-height: 20vh;
+  min-width: 30vw;
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  background: #5A9BD5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropZone.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.dropZone.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dropZoneLabel{
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 500;
+  color: #EDEDED;
+  cursor: pointer;
+  /*margin-bottom: 20px;*/
+}
+.fileInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dropZone:hover {
+  border-color: var(--gray-400);
+  cursor: pointer;
+  background: var(--gray-alpha-100);
+}
+
+.dropZone:hover .dropZoneLabel {
+  color: #5A9BD5 !important;
+  cursor: pointer;
+}
+
+.dropZone:hover .dropZoneLabel svg {
+  fill: #5A9BD5 !important;
+}
+
+
+
+
+
+.scanButton {
+  padding: 12px 24px;
+  background: rgb(98, 205, 255);
+  color: var(--foreground);
+  border: solid rgb(98, 205, 255) 2px;
+  border-radius: 6px;
+  font-size: 26px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06),
+              0 4px 0 rgb(78, 164, 204);
+  transform: translateY(0);
+}
+
+.scanButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1),
+              0 4px 6px -1px rgba(0, 0, 0, 0.06),
+              0 6px 0 rgb(78, 164, 204);
+}
+
+.scanButton:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1),
+              0 1px 2px -1px rgba(0, 0, 0, 0.06),
+              0 2px 0 rgb(78, 164, 204);
+}
+
+.scanButton:hover {
+  background: rgba(98, 205, 255, 0.8);
+}
+
+/*.resultList {
+  list-style: none;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background: var(--gray-alpha-100);
+  width: 100%;
+}*/
+
+.resultItem {
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 4px;
+  background: var(--background);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resultTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  font-family: 'Arial', sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.resultTable thead tr {
+  background-color: var(--background);
+  color: var(--foreground);
+  text-align: left;
+  font-weight: bold;
+}
+
+.resultTable th,
+.resultTable td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.resultTable tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.resultTable tbody tr:nth-of-type(even) {
+  background-color: #e9e9e9;
+}
+
+.resultTable tbody tr:last-of-type {
+  border-bottom: 2px solid var(--background);
+}
+
+.imageTable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+.marco{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #979797;
+  border-radius: 10%;
+  background-color: #ffffff;
+  padding: 10px;
+}
+.marcoImageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  --marcoImageContainer-height: 100px;
+  --marcoImageContainer-width: 100px;
+  height: var(--marcoImageContainer-height);
+  width: var(--marcoImageContainer-width);
+}
+.marcoImageContainer img {
+  max-width: var(--marcoImageContainer-height);
+  max-height: var(--marcoImageContainer-width);
+  object-fit: cover;
+}
+.buttonInsideDropzone{
+  padding: 6px 12px;
+  background: rgb(98, 205, 255);
+  color: var(--foreground);
+  border: solid rgb(98, 205, 255) 2px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+
+.dropZoneExibition {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding-right: calc(var(--xButton_height) + 10px);
+}
+
+.removeAllimages {
+  width: var(--xButton_width);
+  height: var(--xButton_height);
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 6px 12px;
+  background: rgb(98, 205, 255);
+  color: var(--foreground);
+  border: solid rgb(98, 205, 255) 2px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
